@@ -1,0 +1,18 @@
+<x-app-layout>
+    <div class="mb-6 flex justify-between items-center">
+        <a href="{{ route('businesses.index') }}" class="text-blue-600 hover:text-blue-800">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+            </svg>
+            Back to Businesses
+        </a>
+        
+        @if (auth()->check() && auth()->id() === $business->user_id)
+            <a href="{{ route('businesses.edit', $business) }}" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                Edit Business
+            </a>
+        @endif
+    </div>
+
+    <livewire:business-detail :business="$business" />
+</x-app-layout> 
