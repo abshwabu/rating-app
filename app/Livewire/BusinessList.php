@@ -13,8 +13,8 @@ class BusinessList extends Component
 
     public $search = '';
     public $category = '';
-    public $sortBy = 'name';
-    public $sortDirection = 'asc';
+    public $sortBy = 'reviews_avg_rating';
+    public $sortDirection = 'desc';
     public $featuredBusinesses;
 
     public function mount()
@@ -36,14 +36,9 @@ class BusinessList extends Component
         $this->resetPage();
     }
 
-    public function sortBy($field)
+    public function updatingSortBy()
     {
-        if ($this->sortBy === $field) {
-            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            $this->sortBy = $field;
-            $this->sortDirection = 'asc';
-        }
+        $this->resetPage();
     }
 
     public function render()
@@ -65,8 +60,25 @@ class BusinessList extends Component
             $query->where('category_id', $this->category);
         }
 
-        $businesses = $query->orderBy($this->sortBy, $this->sortDirection)
-            ->paginate(12);
+        // Handle sorting
+        switch ($this->sortBy) {
+            case 'reviews_avg_rating':
+                $query->orderBy('reviews_avg_rating', 'desc');
+                break;
+            case 'reviews_count':
+                $query->orderBy('reviews_count', 'desc');
+                break;
+            case 'name':
+                $query->orderBy('name', 'asc');
+                break;
+            case 'name_desc':
+                $query->orderBy('name', 'desc');
+                break;
+            default:
+                $query->orderBy('reviews_avg_rating', 'desc');
+        }
+
+        $businesses = $query->paginate(12);
 
         $categories = Category::orderBy('name')->get();
 

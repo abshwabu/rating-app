@@ -59,7 +59,7 @@
 
         <!-- Search and Filter Section -->
         <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                     <input type="text" 
                            wire:model.live="search" 
@@ -73,6 +73,15 @@
                         @foreach($categories as $category)
                             <option value="{{ $category->id }}">{{ $category->name }}</option>
                         @endforeach
+                    </select>
+                </div>
+                <div>
+                    <select wire:model.live="sortBy" 
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                        <option value="reviews_avg_rating">Highest Rated</option>
+                        <option value="reviews_count">Most Reviews</option>
+                        <option value="name">Alphabetical (A-Z)</option>
+                        <option value="name_desc">Alphabetical (Z-A)</option>
                     </select>
                 </div>
             </div>
