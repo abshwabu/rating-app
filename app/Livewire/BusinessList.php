@@ -15,6 +15,16 @@ class BusinessList extends Component
     public $category = '';
     public $sortBy = 'name';
     public $sortDirection = 'asc';
+    public $featuredBusinesses;
+
+    public function mount()
+    {
+        $this->featuredBusinesses = Business::with(['category', 'reviews'])
+            ->withCount('reviews')
+            ->withAvg('reviews', 'rating')
+            ->where('is_featured', true)
+            ->get();
+    }
 
     public function updatingSearch()
     {
@@ -46,7 +56,8 @@ class BusinessList extends Component
             $query->where(function($q) {
                 $q->where('name', 'like', '%' . $this->search . '%')
                   ->orWhere('description', 'like', '%' . $this->search . '%')
-                  ->orWhere('city', 'like', '%' . $this->search . '%');
+                  ->orWhere('city', 'like', '%' . $this->search . '%')
+                  ->orWhere('state', 'like', '%' . $this->search . '%');
             });
         }
 
@@ -55,7 +66,7 @@ class BusinessList extends Component
         }
 
         $businesses = $query->orderBy($this->sortBy, $this->sortDirection)
-            ->paginate(10);
+            ->paginate(12);
 
         $categories = Category::orderBy('name')->get();
 

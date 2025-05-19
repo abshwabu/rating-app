@@ -1,5 +1,66 @@
 <div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Featured Businesses Slider -->
+        @if($featuredBusinesses->count() > 0)
+            <div class="relative mb-12">
+                <div class="swiper-container">
+                    <div class="swiper-wrapper">
+                        @foreach($featuredBusinesses as $business)
+                            <div class="swiper-slide">
+                                <div class="relative h-[500px] rounded-2xl overflow-hidden">
+                                    @if($business->image)
+                                        <img src="{{ asset('storage/' . $business->image) }}" 
+                                             alt="{{ $business->name }}" 
+                                             class="w-full h-full object-cover">
+                                    @else
+                                        <div class="w-full h-full bg-gradient-to-r from-blue-600 to-indigo-700"></div>
+                                    @endif
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent"></div>
+                                    
+                                    <div class="absolute bottom-0 left-0 right-0 p-8 text-white">
+                                        <div class="max-w-3xl mx-auto">
+                                            <div class="flex items-center space-x-2 mb-4">
+                                                <span class="px-3 py-1 bg-blue-600 rounded-full text-sm font-medium">Featured</span>
+                                                <span class="px-3 py-1 bg-white/20 rounded-full text-sm">{{ $business->category->name }}</span>
+                                            </div>
+                                            <h2 class="text-4xl font-bold mb-4">{{ $business->name }}</h2>
+                                            <p class="text-lg text-gray-200 mb-6 line-clamp-2">{{ $business->description }}</p>
+                                            <div class="flex items-center space-x-6">
+                                                <div class="flex items-center">
+                                                    @for($i = 1; $i <= 5; $i++)
+                                                        <svg class="w-5 h-5 {{ $i <= $business->reviews_avg_rating ? 'text-yellow-400' : 'text-gray-300' }}" fill="currentColor" viewBox="0 0 20 20">
+                                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                                        </svg>
+                                                    @endfor
+                                                    <span class="ml-2 text-sm">{{ number_format($business->reviews_avg_rating, 1) }} ({{ $business->reviews_count }} reviews)</span>
+                                                </div>
+                                                <div class="flex items-center text-sm">
+                                                    <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                    </svg>
+                                                    {{ $business->city }}, {{ $business->state }}
+                                                </div>
+                                            </div>
+                                            <div class="mt-6">
+                                                <a href="{{ route('business.show', $business) }}" 
+                                                   class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                                    View Details
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                    <div class="swiper-pagination"></div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                </div>
+            </div>
+        @endif
+
         <!-- Search and Filter Section -->
         <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -21,105 +82,97 @@
             </div>
         </div>
 
-        <!-- Businesses List -->
-        <div class="bg-white rounded-lg shadow-sm overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer" wire:click="sortBy('name')">
-                                <div class="flex items-center space-x-1">
-                                    <span>Business Name</span>
-                                    @if($sortBy === 'name')
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" class="{{ $sortDirection === 'asc' ? 'rotate-180' : '' }}"/>
-                                        </svg>
-                                    @endif
-                                </div>
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer" wire:click="sortBy('reviews_avg_rating')">
-                                <div class="flex items-center space-x-1">
-                                    <span>Rating</span>
-                                    @if($sortBy === 'reviews_avg_rating')
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" class="{{ $sortDirection === 'asc' ? 'rotate-180' : '' }}"/>
-                                        </svg>
-                                    @endif
-                                </div>
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reviews</th>
-                            <th scope="col" class="relative px-6 py-3">
-                                <span class="sr-only">Actions</span>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        @forelse($businesses as $business)
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="flex items-center">
-                                        @if($business->image)
-                                            <img class="h-10 w-10 rounded-full object-cover" src="{{ asset('storage/' . $business->image) }}" alt="{{ $business->name }}">
-                                        @else
-                                            <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                                                <span class="text-gray-500 font-medium">{{ substr($business->name, 0, 1) }}</span>
-                                            </div>
-                                        @endif
-                                        <div class="ml-4">
-                                            <div class="text-sm font-medium text-gray-900">
-                                                {{ $business->name }}
-                                            </div>
-                                            @if($business->is_featured)
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                                                    Featured
-                                                </span>
-                                            @endif
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="flex items-center">
-                                        @for($i = 1; $i <= 5; $i++)
-                                            <svg class="w-5 h-5 {{ $i <= $business->reviews_avg_rating ? 'text-yellow-400' : 'text-gray-300' }}" fill="currentColor" viewBox="0 0 20 20">
-                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                                            </svg>
-                                        @endfor
-                                        <span class="ml-2 text-sm text-gray-500">
-                                            {{ number_format($business->reviews_avg_rating, 1) }}
-                                        </span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                                        {{ $business->category->name }}
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ $business->city }}, {{ $business->state }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ $business->reviews_count }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <a href="{{ route('business.show', $business) }}" class="text-blue-600 hover:text-blue-900">View Details</a>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="6" class="px-6 py-4 text-center text-gray-500">
-                                    No businesses found.
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-            
-            <div class="px-6 py-4 border-t border-gray-200">
-                {{ $businesses->links() }}
-            </div>
+        <!-- Businesses Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            @forelse($businesses as $business)
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200">
+                    @if($business->image)
+                        <div class="h-48 overflow-hidden">
+                            <img src="{{ asset('storage/' . $business->image) }}" 
+                                 alt="{{ $business->name }}" 
+                                 class="w-full h-full object-cover hover:scale-105 transition-transform duration-200">
+                        </div>
+                    @else
+                        <div class="h-48 bg-gradient-to-r from-blue-600 to-indigo-700 flex items-center justify-center">
+                            <span class="text-4xl text-white font-bold">{{ substr($business->name, 0, 1) }}</span>
+                        </div>
+                    @endif
+                    
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-xl font-semibold text-gray-900">{{ $business->name }}</h3>
+                            @if($business->is_featured)
+                                <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">Featured</span>
+                            @endif
+                        </div>
+                        
+                        <div class="flex items-center mb-4">
+                            @for($i = 1; $i <= 5; $i++)
+                                <svg class="w-5 h-5 {{ $i <= $business->reviews_avg_rating ? 'text-yellow-400' : 'text-gray-300' }}" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                </svg>
+                            @endfor
+                            <span class="ml-2 text-sm text-gray-500">
+                                {{ number_format($business->reviews_avg_rating, 1) }} ({{ $business->reviews_count }} reviews)
+                            </span>
+                        </div>
+                        
+                        <p class="text-gray-600 mb-4 line-clamp-2">{{ $business->description }}</p>
+                        
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center text-sm text-gray-500">
+                                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                </svg>
+                                {{ $business->city }}, {{ $business->state }}
+                            </div>
+                            <a href="{{ route('business.show', $business) }}" 
+                               class="text-blue-600 hover:text-blue-800 font-medium">
+                                View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div class="col-span-full">
+                    <div class="text-center py-12">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                        </svg>
+                        <p class="mt-4 text-xl text-gray-500">No businesses found matching your criteria.</p>
+                        <p class="mt-2 text-gray-500">Try adjusting your search or category filter.</p>
+                    </div>
+                </div>
+            @endforelse
+        </div>
+        
+        <div class="mt-8">
+            {{ $businesses->links() }}
         </div>
     </div>
+
+    @push('scripts')
+    <script>
+        document.addEventListener('livewire:initialized', function () {
+            new Swiper('.swiper-container', {
+                slidesPerView: 1,
+                spaceBetween: 30,
+                loop: true,
+                autoplay: {
+                    delay: 5000,
+                    disableOnInteraction: false,
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+            });
+        });
+    </script>
+    @endpush
 </div>
