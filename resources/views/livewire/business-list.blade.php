@@ -3,60 +3,56 @@
         <!-- Featured Businesses Slider -->
         @if($featuredBusinesses->count() > 0)
             <div class="relative mb-12">
-                <div class="swiper-container">
+                <div class="swiper-container overflow-hidden">
                     <div class="swiper-wrapper">
                         @foreach($featuredBusinesses as $business)
                             <div class="swiper-slide">
-                                <div class="relative h-[500px] rounded-2xl overflow-hidden">
-                                    @if($business->image)
-                                        <img src="{{ asset('storage/' . $business->image) }}" 
-                                             alt="{{ $business->name }}" 
-                                             class="w-full h-full object-cover">
-                                    @else
-                                        <div class="w-full h-full bg-gradient-to-r from-blue-600 to-indigo-700"></div>
-                                    @endif
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent"></div>
-                                    
-                                    <div class="absolute bottom-0 left-0 right-0 p-8 text-white">
-                                        <div class="max-w-3xl mx-auto">
-                                            <div class="flex items-center space-x-2 mb-4">
-                                                <span class="px-3 py-1 bg-blue-600 rounded-full text-sm font-medium">Featured</span>
-                                                <span class="px-3 py-1 bg-white/20 rounded-full text-sm">{{ $business->category->name }}</span>
-                                            </div>
-                                            <h2 class="text-4xl font-bold mb-4">{{ $business->name }}</h2>
-                                            <p class="text-lg text-gray-200 mb-6 line-clamp-2">{{ $business->description }}</p>
-                                            <div class="flex items-center space-x-6">
-                                                <div class="flex items-center">
-                                                    @for($i = 1; $i <= 5; $i++)
-                                                        <svg class="w-5 h-5 {{ $i <= $business->reviews_avg_rating ? 'text-yellow-400' : 'text-gray-300' }}" fill="currentColor" viewBox="0 0 20 20">
-                                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                <a href="{{ route('business.show', $business) }}" class="block">
+                                    <div class="relative h-[500px] rounded-2xl overflow-hidden">
+                                        @if($business->image)
+                                            <img src="{{ asset('storage/' . $business->image) }}" 
+                                                 alt="{{ $business->name }}" 
+                                                 class="w-full h-full object-cover">
+                                        @else
+                                            <div class="w-full h-full bg-gradient-to-r from-blue-600 to-indigo-700"></div>
+                                        @endif
+                                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent"></div>
+                                        
+                                        <div class="absolute bottom-0 left-0 right-0 p-8 text-white">
+                                            <div class="max-w-3xl mx-auto">
+                                                <div class="flex items-center space-x-2 mb-4">
+                                                    <span class="px-3 py-1 bg-blue-600 rounded-full text-sm font-medium">Featured</span>
+                                                    <span class="px-3 py-1 bg-white/20 rounded-full text-sm">{{ $business->category->name }}</span>
+                                                </div>
+                                                <h2 class="text-4xl font-bold mb-4">{{ $business->name }}</h2>
+                                                <p class="text-lg text-gray-200 mb-6 line-clamp-2">{{ $business->description }}</p>
+                                                <div class="flex items-center space-x-6">
+                                                    <div class="flex items-center">
+                                                        @for($i = 1; $i <= 5; $i++)
+                                                            <svg class="w-5 h-5 {{ $i <= $business->reviews_avg_rating ? 'text-yellow-400' : 'text-gray-300' }}" fill="currentColor" viewBox="0 0 20 20">
+                                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                                            </svg>
+                                                        @endfor
+                                                        <span class="ml-2 text-sm">{{ number_format($business->reviews_avg_rating, 1) }} ({{ $business->reviews_count }} reviews)</span>
+                                                    </div>
+                                                    <div class="flex items-center text-sm">
+                                                        <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                                                         </svg>
-                                                    @endfor
-                                                    <span class="ml-2 text-sm">{{ number_format($business->reviews_avg_rating, 1) }} ({{ $business->reviews_count }} reviews)</span>
+                                                        {{ $business->city }}, {{ $business->state }}
+                                                    </div>
                                                 </div>
-                                                <div class="flex items-center text-sm">
-                                                    <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                                    </svg>
-                                                    {{ $business->city }}, {{ $business->state }}
-                                                </div>
-                                            </div>
-                                            <div class="mt-6">
-                                                <a href="{{ route('business.show', $business) }}" 
-                                                   class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                                    View Details
-                                                </a>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </a>
                             </div>
                         @endforeach
                     </div>
                     <div class="swiper-pagination"></div>
-                    <div class="swiper-button-next"></div>
-                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-button-next !text-white"></div>
+                    <div class="swiper-button-prev !text-white"></div>
                 </div>
             </div>
         @endif
@@ -85,41 +81,41 @@
         <!-- Businesses Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse($businesses as $business)
-                <div class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200">
-                    @if($business->image)
-                        <div class="h-48 overflow-hidden">
-                            <img src="{{ asset('storage/' . $business->image) }}" 
-                                 alt="{{ $business->name }}" 
-                                 class="w-full h-full object-cover hover:scale-105 transition-transform duration-200">
-                        </div>
-                    @else
-                        <div class="h-48 bg-gradient-to-r from-blue-600 to-indigo-700 flex items-center justify-center">
-                            <span class="text-4xl text-white font-bold">{{ substr($business->name, 0, 1) }}</span>
-                        </div>
-                    @endif
-                    
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-xl font-semibold text-gray-900">{{ $business->name }}</h3>
-                            @if($business->is_featured)
-                                <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">Featured</span>
-                            @endif
-                        </div>
+                <a href="{{ route('business.show', $business) }}" class="block">
+                    <div class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200 h-full">
+                        @if($business->image)
+                            <div class="h-48 overflow-hidden">
+                                <img src="{{ asset('storage/' . $business->image) }}" 
+                                     alt="{{ $business->name }}" 
+                                     class="w-full h-full object-cover hover:scale-105 transition-transform duration-200">
+                            </div>
+                        @else
+                            <div class="h-48 bg-gradient-to-r from-blue-600 to-indigo-700 flex items-center justify-center">
+                                <span class="text-4xl text-white font-bold">{{ substr($business->name, 0, 1) }}</span>
+                            </div>
+                        @endif
                         
-                        <div class="flex items-center mb-4">
-                            @for($i = 1; $i <= 5; $i++)
-                                <svg class="w-5 h-5 {{ $i <= $business->reviews_avg_rating ? 'text-yellow-400' : 'text-gray-300' }}" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                                </svg>
-                            @endfor
-                            <span class="ml-2 text-sm text-gray-500">
-                                {{ number_format($business->reviews_avg_rating, 1) }} ({{ $business->reviews_count }} reviews)
-                            </span>
-                        </div>
-                        
-                        <p class="text-gray-600 mb-4 line-clamp-2">{{ $business->description }}</p>
-                        
-                        <div class="flex items-center justify-between">
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-xl font-semibold text-gray-900">{{ $business->name }}</h3>
+                                @if($business->is_featured)
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">Featured</span>
+                                @endif
+                            </div>
+                            
+                            <div class="flex items-center mb-4">
+                                @for($i = 1; $i <= 5; $i++)
+                                    <svg class="w-5 h-5 {{ $i <= $business->reviews_avg_rating ? 'text-yellow-400' : 'text-gray-300' }}" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                    </svg>
+                                @endfor
+                                <span class="ml-2 text-sm text-gray-500">
+                                    {{ number_format($business->reviews_avg_rating, 1) }} ({{ $business->reviews_count }} reviews)
+                                </span>
+                            </div>
+                            
+                            <p class="text-gray-600 mb-4 line-clamp-2">{{ $business->description }}</p>
+                            
                             <div class="flex items-center text-sm text-gray-500">
                                 <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
@@ -127,13 +123,9 @@
                                 </svg>
                                 {{ $business->city }}, {{ $business->state }}
                             </div>
-                            <a href="{{ route('business.show', $business) }}" 
-                               class="text-blue-600 hover:text-blue-800 font-medium">
-                                View Details
-                            </a>
                         </div>
                     </div>
-                </div>
+                </a>
             @empty
                 <div class="col-span-full">
                     <div class="text-center py-12">
@@ -157,7 +149,7 @@
         document.addEventListener('livewire:initialized', function () {
             new Swiper('.swiper-container', {
                 slidesPerView: 1,
-                spaceBetween: 30,
+                spaceBetween: 0,
                 loop: true,
                 autoplay: {
                     delay: 5000,
@@ -171,6 +163,12 @@
                     nextEl: '.swiper-button-next',
                     prevEl: '.swiper-button-prev',
                 },
+                effect: 'fade',
+                fadeEffect: {
+                    crossFade: true
+                },
+                watchSlidesProgress: true,
+                preventInteractionOnTransition: true,
             });
         });
     </script>
