@@ -47,15 +47,33 @@
                 <!-- Image Upload -->
                 <div class="md:col-span-2">
                     <label for="image" class="block text-sm font-medium text-gray-700 mb-1">Business Image</label>
-                    <div class="mt-1 flex items-center">
-                        @if ($image)
-                            <img src="{{ $image->temporaryUrl() }}" class="h-32 w-32 object-cover rounded-lg">
-                        @elseif ($tempImage)
-                            <img src="{{ asset('storage/' . $tempImage) }}" class="h-32 w-32 object-cover rounded-lg">
-                        @endif
-                        <input type="file" id="image" wire:model="image" class="ml-4" accept="image/*">
+                    <div class="mt-1 flex flex-col items-center">
+                        <div class="w-full max-w-md">
+                            <div class="relative group">
+                                <div class="w-full h-64 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
+                                    @if ($image)
+                                        <img src="{{ $image->temporaryUrl() }}" class="w-full h-full object-cover rounded-lg">
+                                    @elseif ($tempImage)
+                                        <img src="{{ asset('storage/' . $tempImage) }}" class="w-full h-full object-cover rounded-lg">
+                                    @else
+                                        <svg class="w-12 h-12 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        <p class="text-sm text-gray-500">Click to upload or drag and drop</p>
+                                        <p class="text-xs text-gray-400 mt-1">PNG, JPG, GIF up to 10MB</p>
+                                    @endif
+                                </div>
+                                <input type="file" 
+                                       id="image" 
+                                       wire:model="image" 
+                                       class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                       accept="image/*">
+                            </div>
+                        </div>
+                        @error('image') 
+                            <p class="text-red-600 text-sm mt-2">{{ $message }}</p> 
+                        @enderror
                     </div>
-                    @error('image') <p class="text-red-600 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
 
                 <!-- Address -->
