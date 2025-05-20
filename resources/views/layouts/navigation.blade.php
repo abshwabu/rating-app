@@ -96,6 +96,9 @@
                 </div>
 
                 <div class="mt-3 space-y-1">
+                    <a href="{{ route('businesses.create') }}" class="block w-full px-4 py-2 text-base font-medium text-indigo-700 bg-white hover:bg-gray-50 text-center rounded-md shadow-sm">
+                        Add Business
+                    </a>
                     <x-responsive-nav-link :href="route('profile.edit')" class="text-white">
                         {{ __('Profile') }}
                     </x-responsive-nav-link>

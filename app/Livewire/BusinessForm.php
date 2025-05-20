@@ -15,16 +15,16 @@ class BusinessForm extends Component
 
     public $business;
     public $businessId;
-    public $name;
-    public $description;
-    public $address;
-    public $city;
-    public $state;
-    public $zip_code;
-    public $phone;
-    public $website;
-    public $email;
-    public $category_id;
+    public $name = '';
+    public $description = '';
+    public $address = '';
+    public $city = '';
+    public $state = '';
+    public $zip_code = '';
+    public $phone = '';
+    public $website = '';
+    public $email = '';
+    public $category_id = '';
     public $image;
     public $tempImage;
     
@@ -34,16 +34,16 @@ class BusinessForm extends Component
     {
         return [
             'name' => 'required|min:3|max:100',
-            'description' => 'nullable|max:1000',
+            'description' => 'required|min:10|max:1000',
             'address' => 'required|max:200',
             'city' => 'required|max:100',
-            'state' => 'nullable|max:50',
+            'state' => 'required|max:50',
             'zip_code' => 'nullable|max:20',
             'phone' => 'nullable|max:20',
             'website' => 'nullable|url|max:200',
             'email' => 'nullable|email|max:100',
             'category_id' => 'required|exists:categories,id',
-            'image' => 'nullable|image|max:1024', // max 1MB
+            'image' => 'nullable|image|max:10240', // max 10MB
         ];
     }
 
@@ -74,7 +74,7 @@ class BusinessForm extends Component
 
     public function saveBusiness()
     {
-        $this->validate();
+        $validated = $this->validate();
 
         $data = [
             'name' => $this->name,
