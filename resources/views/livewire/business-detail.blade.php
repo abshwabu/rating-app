@@ -137,7 +137,8 @@
                                                     <div class="mt-4">
                                                         <img src="{{ asset('storage/' . $review->image) }}" 
                                                              alt="Review image" 
-                                                             class="rounded-lg max-h-48 object-cover">
+                                                             class="rounded-lg max-h-48 object-cover cursor-pointer hover:opacity-90 transition-opacity duration-200"
+                                                             wire:click="showImage({{ $review->id }})">
                                                     </div>
                                                 @endif
                                             </div>
@@ -216,4 +217,62 @@
             </div>
         </div>
     </div>
+
+    <!-- Image Zoom Modal -->
+    @if($showImageModal)
+    <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity" aria-hidden="true" wire:click="$set('showImageModal', false)"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-transparent rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+                <div class="relative">
+                    <!-- Close Button -->
+                    <button type="button" 
+                            class="absolute top-4 right-4 text-white hover:text-gray-300 focus:outline-none z-10"
+                            wire:click="$set('showImageModal', false)">
+                        <span class="sr-only">Close</span>
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+
+                    <!-- Previous Button -->
+                    @if($currentImageIndex > 0)
+                    <button type="button"
+                            class="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 focus:outline-none z-10"
+                            wire:click="previousImage">
+                        <span class="sr-only">Previous</span>
+                        <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    @endif
+
+                    <!-- Next Button -->
+                    @if($currentImageIndex < count($reviewImages) - 1)
+                    <button type="button"
+                            class="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 focus:outline-none z-10"
+                            wire:click="nextImage">
+                        <span class="sr-only">Next</span>
+                        <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                    @endif
+
+                    <!-- Image -->
+                    <div class="p-4">
+                        <img src="{{ $reviewImages[$currentImageIndex] }}" 
+                             class="w-full h-auto max-h-[80vh] object-contain">
+                    </div>
+
+                    <!-- Image Counter -->
+                    <div class="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-sm">
+                        {{ $currentImageIndex + 1 }} / {{ count($reviewImages) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
 </div>

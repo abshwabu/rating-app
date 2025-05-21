@@ -39,7 +39,7 @@ class ReviewForm extends Component
     public function updatedImage()
     {
         $this->validate([
-            'image' => 'image|max:1024', // 1MB Max
+            'image' => 'image|max:10240', // 1MB Max
         ]);
     }
 
@@ -53,7 +53,7 @@ class ReviewForm extends Component
         $this->validate([
             'rating' => 'required|integer|min:1|max:5',
             'comment' => 'required|min:10',
-            'image' => 'nullable|image|max:1024', // 1MB Max
+            'image' => 'nullable|image|max:10240', // 1MB Max
         ]);
 
         $reviewData = [
