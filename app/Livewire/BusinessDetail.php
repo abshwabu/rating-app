@@ -7,10 +7,12 @@ use Livewire\Component;
 use Livewire\Attributes\On;
 use Illuminate\Support\Facades\Auth;
 use Livewire\WithPagination;
+use Livewire\WithFileUploads;
+use Illuminate\Support\Facades\Storage;
 
 class BusinessDetail extends Component
 {
-    use WithPagination;
+    use WithPagination, WithFileUploads;
 
     public $business;
     public $image;
@@ -21,6 +23,10 @@ class BusinessDetail extends Component
     public $currentImageIndex = 0;
     public $reviewImages = [];
     public $currentReviewId = null;
+    public $editingReview = null;
+    public $editComment = '';
+    public $editRating = 0;
+    public $editImage = null;
 
     public function mount(Business $business)
     {
@@ -88,6 +94,71 @@ class BusinessDetail extends Component
     public function updatingSortReviews()
     {
         $this->resetPage();
+    }
+
+    public function startEditing($reviewId)
+    {
+        $review = $this->business->reviews()->findOrFail($reviewId);
+        
+        // Check if user is authorized to edit this review
+        if (Auth::id() !== $review->user_id && !Auth::user()->isAdmin()) {
+            return;
+        }
+
+        $this->editingReview = $review;
+        $this->editComment = $review->comment;
+        $this->editRating = $review->rating;
+    }
+
+    public function cancelEditing()
+    {
+        $this->editingReview = null;
+        $this->editComment = '';
+        $this->editRating = 0;
+        $this->editImage = null;
+    }
+
+    public function updateReview()
+    {
+        if (!$this->editingReview) {
+            return;
+        }
+
+        // Check if user is authorized to edit this review
+        if (Auth::id() !== $this->editingReview->user_id && !Auth::user()->isAdmin()) {
+            return;
+        }
+
+        $this->validate([
+            'editComment' => 'required|min:10',
+            'editRating' => 'required|integer|min:1|max:5',
+            'editImage' => 'nullable|image|max:2048'
+        ]);
+
+        $data = [
+            'comment' => $this->editComment,
+            'rating' => $this->editRating,
+        ];
+
+        if ($this->editImage) {
+            // Delete old image if exists
+            if ($this->editingReview->image) {
+                Storage::disk('public')->delete($this->editingReview->image);
+            }
+            $data['image'] = $this->editImage->store('reviews', 'public');
+        }
+
+        $this->editingReview->update($data);
+
+        $this->cancelEditing();
+        $this->refreshBusiness();
+    }
+
+    public function updatedEditImage()
+    {
+        $this->validate([
+            'editImage' => 'image|max:2048'
+        ]);
     }
 
     public function render()

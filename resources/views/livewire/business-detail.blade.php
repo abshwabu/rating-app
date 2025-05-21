@@ -121,28 +121,88 @@
                                 @foreach($reviews as $review)
                                     <div class="border-b border-gray-200 pb-6 last:border-0 last:pb-0">
                                         <div class="flex items-start justify-between">
-                                            <div>
-                                                <div class="flex items-center mb-2">
+                                            <div class="flex-1">
+                                                <div class="flex items-center justify-between mb-2">
                                                     <div class="flex items-center">
                                                         @for($i = 1; $i <= 5; $i++)
                                                             <svg class="w-5 h-5 {{ $i <= $review->rating ? 'text-yellow-400' : 'text-gray-300' }}" fill="currentColor" viewBox="0 0 20 20">
                                                                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                                                             </svg>
                                                         @endfor
+                                                        <span class="ml-2 text-sm text-gray-500">{{ $review->created_at->diffForHumans() }}</span>
                                                     </div>
-                                                    <span class="ml-2 text-sm text-gray-500">{{ $review->created_at->diffForHumans() }}</span>
+                                                    @if(Auth::id() === $review->user_id || Auth::user()?->isAdmin())
+                                                        <button wire:click="startEditing({{ $review->id }})" 
+                                                                class="text-blue-600 hover:text-blue-800 text-sm">
+                                                            Edit
+                                                        </button>
+                                                    @endif
                                                 </div>
-                                                <p class="text-gray-900">{{ $review->comment }}</p>
-                                                @if($review->image)
-                                                    <div class="mt-4">
-                                                        <img src="{{ asset('storage/' . $review->image) }}" 
-                                                             alt="Review image" 
-                                                             class="rounded-lg max-h-48 object-cover cursor-pointer hover:opacity-90 transition-opacity duration-200"
-                                                             wire:click="showImage({{ $review->id }})">
+
+                                                @if($editingReview && $editingReview->id === $review->id)
+                                                    <div class="mt-4 space-y-4">
+                                                        <div>
+                                                            <label class="block text-sm font-medium text-gray-700">Rating</label>
+                                                            <div class="flex items-center mt-1">
+                                                                @for($i = 1; $i <= 5; $i++)
+                                                                    <button wire:click="$set('editRating', {{ $i }})" 
+                                                                            class="focus:outline-none">
+                                                                        <svg class="w-8 h-8 {{ $i <= $editRating ? 'text-yellow-400' : 'text-gray-300' }}" 
+                                                                             fill="currentColor" viewBox="0 0 20 20">
+                                                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                                                        </svg>
+                                                                    </button>
+                                                                @endfor
+                                                            </div>
+                                                        </div>
+
+                                                        <div>
+                                                            <label for="editComment" class="block text-sm font-medium text-gray-700">Comment</label>
+                                                            <textarea wire:model="editComment" 
+                                                                      id="editComment" 
+                                                                      rows="3" 
+                                                                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
+                                                            @error('editComment') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                                                        </div>
+
+                                                        <div>
+                                                            <label for="editImage" class="block text-sm font-medium text-gray-700">Image</label>
+                                                            <input type="file" 
+                                                                   wire:model="editImage" 
+                                                                   id="editImage" 
+                                                                   class="mt-1 block w-full text-sm text-gray-500
+                                                                          file:mr-4 file:py-2 file:px-4
+                                                                          file:rounded-md file:border-0
+                                                                          file:text-sm file:font-semibold
+                                                                          file:bg-blue-50 file:text-blue-700
+                                                                          hover:file:bg-blue-100">
+                                                            @error('editImage') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                                                        </div>
+
+                                                        <div class="flex justify-end space-x-3">
+                                                            <button wire:click="cancelEditing" 
+                                                                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                                                Cancel
+                                                            </button>
+                                                            <button wire:click="updateReview" 
+                                                                    class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                                                Save Changes
+                                                            </button>
+                                                        </div>
                                                     </div>
+                                                @else
+                                                    <p class="text-gray-900">{{ $review->comment }}</p>
+                                                    @if($review->image)
+                                                        <div class="mt-4">
+                                                            <img src="{{ asset('storage/' . $review->image) }}" 
+                                                                 alt="Review image" 
+                                                                 class="rounded-lg max-h-48 object-cover cursor-pointer hover:opacity-90 transition-opacity duration-200"
+                                                                 wire:click="showImage({{ $review->id }})">
+                                                        </div>
+                                                    @endif
                                                 @endif
                                             </div>
-                                            <div class="text-sm text-gray-500">
+                                            <div class="text-sm text-gray-500 ml-4">
                                                 {{ $review->user->name }}
                                             </div>
                                         </div>
