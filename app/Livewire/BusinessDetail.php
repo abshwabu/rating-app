@@ -20,38 +20,27 @@ class BusinessDetail extends Component
     public $showImageModal = false;
     public $currentImageIndex = 0;
     public $reviewImages = [];
+    public $currentReviewId = null;
 
     public function mount(Business $business)
     {
         $this->business = $business;
         $this->image = $business->image;
         $this->isFeatured = $business->is_featured;
-        $this->loadReviewImages();
-    }
-
-    public function loadReviewImages()
-    {
-        // Get all reviews with images, regardless of pagination
-        $this->reviewImages = $this->business->reviews()
-            ->whereNotNull('image')
-            ->pluck('image')
-            ->map(function ($image) {
-                return asset('storage/' . $image);
-            })
-            ->toArray();
     }
 
     public function showImage($reviewId)
     {
-        // Find the review with the image
+        // Get images only from this specific review
         $review = $this->business->reviews()
             ->where('id', $reviewId)
             ->whereNotNull('image')
             ->first();
             
         if ($review) {
-            $imageUrl = asset('storage/' . $review->image);
-            $this->currentImageIndex = array_search($imageUrl, $this->reviewImages);
+            $this->currentReviewId = $reviewId;
+            $this->reviewImages = [asset('storage/' . $review->image)];
+            $this->currentImageIndex = 0;
             $this->showImageModal = true;
         }
     }
