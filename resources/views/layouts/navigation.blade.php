@@ -6,16 +6,16 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('home') }}" class="text-xl font-bold text-white">
-                        Business Reviews
+                        Review Me
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('businesses.index')" :active="request()->routeIs('businesses.*')" class="text-gray-100 hover:text-white hover:border-gray-300">
+                    <x-nav-link :href="route('businesses.index')" :active="request()->routeIs('businesses.*')" class="text-white hover:text-gray-300 hover:border-gray-300">
                         {{ __('Businesses') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.*')" class="text-gray-100 hover:text-white hover:border-gray-300">
+                    <x-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.*')" class="text-white hover:text-gray-300 hover:border-gray-300">
                         {{ __('Categories') }}
                     </x-nav-link>
                 </div>

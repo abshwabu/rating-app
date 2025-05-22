@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Business Reviews') }}</title>
+    <title>{{ config('app.name', 'ews') }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -71,7 +71,7 @@
                         <!-- Logo -->
                         <div class="flex-shrink-0 flex items-center">
                             <a href="{{ route('home') }}" class="text-xl font-bold text-blue-600">
-                                Business Reviews
+                                Review Me
                             </a>
                         </div>
 
@@ -147,7 +147,7 @@
         <footer class="bg-white border-t border-gray-200 py-6">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center text-gray-500 text-sm">
-                    &copy; {{ date('Y') }} Business Reviews. All rights reserved.
+                    &copy; {{ date('Y') }} Review Me. All rights reserved.
                 </div>
             </div>
         </footer>
